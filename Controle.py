@@ -36,13 +36,13 @@ class Controle:
         
         if not len(self.Estrutura):
             print('Empty')
-            if not self.ended_production:
+            if self.ended_production:
                 self.thirdLock.release()
                 self.ConsumeLock.release()
                 return 'END'
-            else:
-                self.ProduceLock.release()
-                self.thirdLock.acquire()
+            
+            self.ProduceLock.release()
+            self.thirdLock.acquire()
         
         value = self.Estrutura.pop(0)
         print(name + ' => Took ' + str(value))
@@ -56,5 +56,5 @@ class Controle:
         self.consumidosLock.acquire()
         self.consumidos.append(e)
         # self.consumidos.sort()
-        print('____________' + str(self.consumidos) + '___________')
+        # print('_______' + str(self.consumidos) + '_______')
         self.consumidosLock.release()

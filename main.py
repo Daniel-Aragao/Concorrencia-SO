@@ -41,14 +41,14 @@ def main_func():
         consumed = 0
         for c in consums:
             consumed += len(c.elements)
-    
-    for p in prods:
-        print(str(p.getName()) + ' ended')
-        p.join()
         
     for c in consums:
         print(str(c.getName()) + ' ended')
         c.join()
+    
+    for p in prods:
+        print(str(p.getName()) + ' ended')
+        p.join()
     
     print("end => " + str(estrutura.consumidos))
 
