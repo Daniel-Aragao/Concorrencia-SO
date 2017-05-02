@@ -33,7 +33,7 @@ def main_func():
         for p in prods:
             produced += len(p.elements)
     
-    # print('________Ended_production__________')
+    print('________Ended_production__________')
     estrutura.ended_production = True
     estrutura.thirdLock.release()
 

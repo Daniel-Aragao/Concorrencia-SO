@@ -48,7 +48,7 @@ class Controle:
         print(name + ' => Took ' + str(value))
 
         print(str(self.Estrutura))     
-        self.thirdLock.release()
+        self.thirdLock.release()  # 3 5 4 7
         self.ConsumeLock.release()
         return value
 
