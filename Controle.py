@@ -16,7 +16,7 @@ class Controle:
 
     def inserir(self, e, name):
         self.thirdLock.acquire(False)
-        self.ProduceLock.acquire()   
+        self.ProduceLock.acquire()
         print(name + ' => Insert ' + str(e))
 
         if self.list_size == len(self.Estrutura):

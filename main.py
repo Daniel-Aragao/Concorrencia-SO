@@ -26,12 +26,13 @@ def main_func():
     
 
     consumed = 0
-    produced = 1
+    producing = True
 
-    while produced:
-        produced = 0
+    while producing:
+        producing = False
         for p in prods:
-            produced += len(p.elements)
+            if p.is_alive():
+                producing = True
     
     print('________Ended_production__________')
     estrutura.ended_production = True
@@ -41,14 +42,6 @@ def main_func():
         consumed = 0
         for c in consums:
             consumed += len(c.elements)
-        
-    for c in consums:
-        print(str(c.getName()) + ' ended')
-        c.join()
-    
-    for p in prods:
-        print(str(p.getName()) + ' ended')
-        p.join()
     
     print("end => " + str(estrutura.consumidos))
 

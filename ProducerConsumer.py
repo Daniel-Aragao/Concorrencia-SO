@@ -28,6 +28,7 @@ class Consumer(threading.Thread):
 
             if self.value is None:
                 raise Exception("Value can't be None")
-
-            self.elements.append(self.value)            
-            self.estrutura.add_consumidos(self.value)
+            
+            if self.value is not 'END':
+                self.elements.append(self.value)            
+                self.estrutura.add_consumidos(self.value)
