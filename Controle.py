@@ -1,8 +1,9 @@
 import threading
+from logger import Logger
 
 
 class Controle:
-    def __init__(self, n):
+    def __init__(self, n, log: Logger):
         self.list_size = n
         self.Estrutura = []
         self.ConsumeLock = threading.Lock()
@@ -14,47 +15,49 @@ class Controle:
 
         self.ended_production = False
 
+        self.log = log
+
     def inserir(self, e, name):
         self.thirdLock.acquire(False)
-        self.ProduceLock.acquire()
-        print(name + ' => Insert ' + str(e))
+        self.ProduceLock.acquire(timeout=2)
+        self.log.print(name + ' => Insert ' + str(e))
 
         if self.list_size == len(self.Estrutura):
-            print('Full')            
+            self.log.print('Full')            
             self.thirdLock.release()
-            self.ProduceLock.acquire()
+            self.ProduceLock.acquire(timeout=2)
 
         self.Estrutura.append(e)
-        print(name + ' => Inserted')
-        print(str(self.Estrutura))
+        self.log.print(name + ' => Inserted')
+        self.log.print(str(self.Estrutura))
         self.ProduceLock.release()
     
     def remover(self, name):
-        self.ConsumeLock.acquire()
-        self.thirdLock.acquire()
-        print(name+ ' => Take')
+        self.ConsumeLock.acquire(timeout=2)
+        self.thirdLock.acquire(timeout=2)
+        self.log.print(name+ ' => Take')
         
         if not len(self.Estrutura):
-            print('Empty')
+            self.log.print('Empty')
             if self.ended_production:
                 self.thirdLock.release()
                 self.ConsumeLock.release()
                 return 'END'
             
             self.ProduceLock.release()
-            self.thirdLock.acquire()
+            self.thirdLock.acquire(timeout=2)
         
         value = self.Estrutura.pop(0)
-        print(name + ' => Took ' + str(value))
+        self.log.print(name + ' => Took ' + str(value))
 
-        print(str(self.Estrutura))     
+        self.log.print(str(self.Estrutura))     
         self.thirdLock.release()  # 3 5 4 7
         self.ConsumeLock.release()
         return value
 
     def add_consumidos(self, e):
-        self.consumidosLock.acquire()
+        self.consumidosLock.acquire(timeout=2)
         self.consumidos.append(e)
         # self.consumidos.sort()
-        # print('_______' + str(self.consumidos) + '_______')
+        # self.log.print('_______' + str(self.consumidos) + '_______')
         self.consumidosLock.release()
