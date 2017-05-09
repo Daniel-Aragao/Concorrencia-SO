@@ -46,7 +46,7 @@ class LoggerFake(threading.Thread):
         pass
 
     def run(self):
-        pass
+        print('fake logger')
 
     def setItOff(self):
         self.isOn = False
