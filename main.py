@@ -11,7 +11,7 @@ class Main:
     def __init__(self):
         self.estrutura = None
 
-    def main_func(self, qtdP, qtdV, qtdC, n, log=Logger(), timeout=-1):
+    def main_func(self, qtdP, qtdV, qtdC, n, log=Logger(), timeout=2):
         self.estrutura = Controle(n, log, timeout=timeout)
         # log.daemon = True
         # log.start()
@@ -19,17 +19,9 @@ class Main:
         prods = []
         consums = []
 
-        for i in range(0, qtdP):
-            p = Producer(self.estrutura, i, qtdV)
-            # p.daemon = True
-            p.start()
-            prods.append(p)
+        self.start_consumers(consums, qtdC)
 
-        for i in range(0, qtdC):
-            c = Consumer(self.estrutura, i)
-            # c.daemon = True
-            c.start()
-            consums.append(c)
+        self.start_producers(prods, qtdP, qtdV)
 
         consumed = 0
         producing = True
@@ -42,7 +34,9 @@ class Main:
         
         log.print('________Ended_production__________')
         self.estrutura.ended_production = True
-        self.estrutura.thirdLock.release()
+        self.estrutura.condition.acquire()
+        self.estrutura.condition.notify_all()
+        self.estrutura.condition.release()
 
         while consumed < (qtdV * qtdP):
             consumed = 0
@@ -55,13 +49,27 @@ class Main:
         #     while True:
         #         pass
 
+    def start_producers(self, prods, qtdP, qtdV):
+        for i in range(0, qtdP):
+            p = Producer(self.estrutura, i, qtdV)
+            # p.daemon = True
+            p.start()
+            prods.append(p)
+
+    def start_consumers(self, consums, qtdC):
+        for i in range(0, qtdC):
+            c = Consumer(self.estrutura, i)
+            # c.daemon = True
+            c.start()
+            consums.append(c)
+
 
 if __name__ == '__main__':
-    qtdP = 20#int(input('Quantidade de produtores: '))
-    qtdV = 4#int(input('Quantidade de valores por produtor: '))
-    qtdC = 2#int(input('Quantidade de consumidores: '))
-    n = 4#int(input('Tamanho da estrutura de dados: '))
-    for i in range(1,20):
-        Main().main_func(qtdP, qtdV, qtdC, n)  # , LoggerFake())
+    qtdP = 4  # int(input('Quantidade de produtores: '))
+    qtdV = 4  # int(input('Quantidade de valores por produtor: '))
+    qtdC = 2  # int(input('Quantidade de consumidores: '))
+    n = 4  # int(input('Tamanho da estrutura de dados: '))
+    # for i in range(1, 20):
+    Main().main_func(qtdP, qtdV, qtdC, n, timeout=2)  # , log=LoggerFake())
 # else:
     # raise Exception('Must be main!')

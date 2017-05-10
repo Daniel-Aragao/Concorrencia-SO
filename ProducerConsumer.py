@@ -1,6 +1,7 @@
 import threading
 import random
 
+
 class Producer(threading.Thread):
     def __init__(self, estrutura, number, n):
         super(Producer, self).__init__(name="Producer-"+str(number))
